@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>อบรมการใช้ระบบตัดเกรด (ครูผู้สอน)</title>
+<meta name="description" content="สไลด์อบรมครูผู้สอน ทำตามทีละขั้น ระบบตัดเกรด โรงเรียนวัดบางปูน">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#1c1212;overflow:hidden;font-family:'Noto Sans Thai',Tahoma,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3{margin:0;font-weight:600;line-height:1.2}
+p{margin:0;line-height:1.4}
+table{width:100%;border-collapse:collapse}
+th,td{padding:16px 24px;border-bottom:2px solid #E6D6C9;text-align:left;vertical-align:middle}
+th{border-bottom:3px solid #7A1616}
+aside{display:none}
+[data-goto]{cursor:pointer;transition:transform .15s,box-shadow .15s}
+[data-goto]:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(80,20,20,.25)}
+[data-goto]:focus-visible{outline:5px solid #E8B53F;outline-offset:3px}
+img{display:block}
+#stage{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#stage>section{position:absolute!important;left:0;top:0;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s}
+#stage>section.on{opacity:1;visibility:visible}
+/* แถบควบคุม */
+#bar{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:6px;padding:8px 10px;background:rgba(40,16,16,.88);border:1px solid rgba(232,181,63,.45);border-radius:999px;color:#FFF4DC;font-size:15px;backdrop-filter:blur(6px);transition:opacity .3s;max-width:calc(100vw - 16px);flex-wrap:nowrap}
+#bar.hide{opacity:0;pointer-events:none}
+#bar button{font:inherit;color:inherit;background:transparent;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;white-space:nowrap;min-height:40px}
+#bar button:hover,#bar button:focus-visible{background:rgba(232,181,63,.25);outline:none}
+#bar button.sec{padding:8px 11px}
+#bar button.sec.on{background:#E8B53F;color:#4D0A0A;font-weight:700}
+#bar .no{min-width:74px;text-align:center;font-variant-numeric:tabular-nums}
+#bar .sp{width:1px;height:24px;background:rgba(255,244,220,.3);margin:0 4px}
+#prog{position:fixed;left:0;top:0;height:5px;background:#E8B53F;z-index:50;width:0;transition:width .3s}
+#notes{position:fixed;left:50%;transform:translateX(-50%);bottom:80px;width:min(1100px,calc(100vw - 24px));max-height:34vh;overflow:auto;background:rgba(255,251,242,.97);color:#2B1A1A;border:2px solid #E8B53F;border-radius:18px;padding:16px 22px;font-size:18px;line-height:1.6;z-index:49;display:none}
+#notes.show{display:block}
+#notes b{color:#7A1616}
+#rot{position:fixed;inset:0;z-index:60;background:rgba(28,18,18,.96);color:#FFF4DC;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;line-height:1.6}
+#rot b{display:block;font-size:26px;color:#E8B53F;margin-bottom:8px}
+@media (max-width:640px) and (orientation:portrait){#rot.need{display:flex}}
+@media (max-width:760px){#bar button.sec,#bar .sp{display:none}}
+@media print{
+ @page{size:1920px 1080px;margin:0}
+ html,body{height:auto;overflow:visible;background:#fff}
+ #bar,#prog,#notes,#rot{display:none!important}
+ #stage{position:static;transform:none!important;width:1920px;height:auto}
+ #stage>section{position:relative!important;opacity:1!important;visibility:visible!important;break-after:page;page-break-after:always;transition:none}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<main id="stage" aria-live="polite">
+<section id="s01-cover" data-transition="fade" data-sec="intro" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:linear-gradient(135deg,#8C1C1C 0%,#6A1010 55%,#4D0A0A 100%);color:#FFF4DC;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:36px">
+<div style="position:absolute;left:1160px;top:0px;width:760px;height:760px;background:#E8B53F;opacity:0.12;border-radius:50%;z-index:-1"></div>
+<div style="position:absolute;left:1420px;top:660px;width:500px;height:420px;background:#E8B53F;opacity:0.18;border-radius:50%;z-index:-1"></div>
+<div style="width:260px;height:260px;border-radius:50%;background:#FFFBF2;display:flex;align-items:center;justify-content:center;border:10px solid #E8B53F">
+<img src="images/logo.png" alt="ตราโรงเรียนวัดบางปูน" style="width:200px;height:200px;object-fit:contain">
+</div>
+<h1 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:124px;font-weight:700;line-height:1.1;color:#FFF8E8">อบรมการใช้ระบบตัดเกรด</h1>
+<p style="font-size:48px;color:#FFE9B0">สำหรับครูผู้สอน ป.1–ม.3 · ทำตามไปทีละขั้น</p>
+<div style="display:flex;flex-direction:row;gap:20px">
+<p style="font-size:30px;padding:10px 30px;border:2px solid #E8B53F;border-radius:40px;background:#6A1010">ใช้ได้ทั้งคอม โน้ตบุ๊ก iPad</p>
+<p style="font-size:30px;padding:10px 30px;border:2px solid #E8B53F;border-radius:40px;background:#6A1010">ไม่ต้องติดตั้งโปรแกรม</p>
+<p style="font-size:30px;padding:10px 30px;border:2px solid #E8B53F;border-radius:40px;background:#6A1010">ออกเล่ม ปพ.5 ได้เอง</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1100px;font-size:28px;color:#FFE9B0">โรงเรียนวัดบางปูน · สพป.สิงห์บุรี · ปีการศึกษา 2569</p>
+<p style="position:absolute;right:128px;bottom:64px;width:560px;text-align:right;font-size:28px;color:#FFE9B0">พัฒนาโดย ครูซอสสอนสังคม</p>
+<aside>ต้อนรับครู บอกเป้าหมายวันนี้: ทุกคนเข้าระบบ ลงทะเบียนวิชา กรอกคะแนนตัวอย่าง และเห็นเล่ม ปพ.5 ที่ระบบสร้างให้ ใช้เวลาประมาณครึ่งวัน</aside>
+</section>
+<section id="s02-agenda" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">วันนี้เราจะทำอะไรกัน</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:68px;font-weight:600;line-height:1.15;color:#7A1616">เริ่มจากเตรียมตัว แล้วลงมือทำจริงทีละขั้น</h2>
+</div>
+<div style="display:flex;flex-direction:row;gap:28px;flex:1">
+<div data-goto="s05-devices" tabindex="0" role="link" style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;padding:36px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:96px;font-weight:700;line-height:1;color:#E8B53F">1</p>
+<h3 style="font-size:40px;color:#7A1616">เตรียมก่อนอบรม</h3>
+<p style="font-size:30px;color:#6E5A56">อุปกรณ์ ข้อมูลที่ครูต้องนำมา และสิ่งที่โรงเรียนต้องพร้อม</p>
+</div>
+<div data-goto="s09-roadmap" tabindex="0" role="link" style="flex:1;display:flex;flex-direction:column;gap:14px;background:#7A1616;padding:36px;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:96px;font-weight:700;line-height:1;color:#E8B53F">2</p>
+<h3 style="font-size:40px;color:#FFF4DC">ลงมือทีละขั้น</h3>
+<p style="font-size:30px;color:#FFE9B0">7 ขั้นในบทบาทครู ตั้งแต่เข้าระบบจนได้เล่ม ปพ.5</p>
+</div>
+<div data-goto="s18-rules" tabindex="0" role="link" style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;padding:36px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:96px;font-weight:700;line-height:1;color:#E8B53F">3</p>
+<h3 style="font-size:40px;color:#7A1616">กติกาและถามตอบ</h3>
+<p style="font-size:30px;color:#6E5A56">เกณฑ์เกรด มส. และปัญหาที่พบบ่อยพร้อมวิธีแก้</p>
+</div>
+<div data-goto="s21-tools" tabindex="0" role="link" style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBE9B7;padding:36px;border:2px solid #E8B53F;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:96px;font-weight:700;line-height:1;color:#7A1616">+</p>
+<h3 style="font-size:40px;color:#7A1616">ภาคผนวก</h3>
+<p style="font-size:30px;color:#4D0A0A">สำหรับผู้ติดตั้งระบบ: GitHub + Vercel และเครื่องมือที่ต้องมี</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:520px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;top:40px;width:560px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px dashed #E8B53F;border-radius:40px;background:#FBE9B7;color:#4D0A0A">กดการ์ดเพื่อข้ามไปหน้านั้นได้</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">2 / 24</p>
+<aside>ครูทั่วไปสนใจตอน 2 เป็นหลัก ภาคผนวกใช้กับผู้ดูแลระบบหรือผู้ที่จะติดตั้งให้โรงเรียนอื่น</aside>
+</section>
+<section id="s03-how" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ทำความรู้จักระบบ</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">ระบบนี้ทำงานอย่างไร: ครูแค่เปิดเว็บ</h2>
+</div>
+<div style="display:flex;flex-direction:row;align-items:center;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:30px;font-weight:600;color:#A42626">ที่ 1</p>
+<h3 style="font-size:46px;color:#2B1A1A">GitHub</h3>
+<p style="font-size:28px;color:#6E5A56">ที่เก็บไฟล์ของระบบ ผู้ดูแลอัปโหลดไฟล์ใหม่ที่นี่</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="64" height="36" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:30px;font-weight:600;color:#A42626">ที่ 2</p>
+<h3 style="font-size:46px;color:#2B1A1A">Vercel</h3>
+<p style="font-size:28px;color:#6E5A56">นำไฟล์ขึ้นเป็นเว็บให้ทุกคนเปิดได้ด้วยลิงก์เดียว</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="64" height="36" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#7A1616;padding:32px;border:2px solid #E8B53F;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:30px;font-weight:600;color:#E8B53F">ที่ 3 · ครูอยู่ตรงนี้</p>
+<h3 style="font-size:46px;color:#FFF4DC">เว็บระบบตัดเกรด</h3>
+<p style="font-size:28px;color:#FFE9B0">เปิดด้วย Chrome หรือ Safari แล้วล็อกอินใช้งาน</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="64" height="36" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:30px;font-weight:600;color:#A42626">ที่ 4</p>
+<h3 style="font-size:46px;color:#2B1A1A">Firebase</h3>
+<p style="font-size:28px;color:#6E5A56">เก็บบัญชี คะแนน ข้อมูลนักเรียน บันทึกให้เองทุกครั้งที่กรอก</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:20px">
+<p style="flex:1;font-size:32px;background:#DFF3E7;color:#14482E;padding:24px 32px;border-radius:20px"><b>ครูไม่ต้องติดตั้งโปรแกรม</b> ข้อมูลอยู่บนเว็บ เปิดจากเครื่องไหนก็เห็นข้อมูลเดิม</p>
+<p style="flex:1;font-size:32px;background:#FBE9B7;color:#4D0A0A;padding:24px 32px;border-radius:20px"><b>ต้องออนไลน์ตลอด</b> ถ้าเน็ตหลุดให้รอให้กลับมาก่อนกรอกต่อ</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">3 / 24</p>
+<aside>อธิบายสั้น ๆ ให้ครูเข้าใจว่าไม่ต้องกังวลเรื่องเทคนิค ผู้ดูแลระบบจัดการ GitHub และ Vercel ส่วนครูเกี่ยวข้องแค่กล่องที่ 3</aside>
+</section>
+<section id="s04-sec1" data-transition="push" data-sec="prep" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:linear-gradient(135deg,#8C1C1C 0%,#6A1010 55%,#4D0A0A 100%);color:#FFF4DC;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:24px">
+<div style="position:absolute;left:1240px;top:240px;width:600px;height:600px;background:#E8B53F;opacity:0.14;border-radius:50%;z-index:-1"></div>
+<p style="font-family:'Prompt',sans-serif;font-size:280px;font-weight:700;line-height:1;color:#E8B53F">1</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:104px;font-weight:700;line-height:1.1;color:#FFF8E8">เตรียมก่อนอบรม</h2>
+<p style="font-size:44px;color:#FFE9B0">อุปกรณ์ ข้อมูลที่ต้องนำมา และสิ่งที่โรงเรียนต้องพร้อม</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#FFE9B0">4 / 24</p>
+</section>
+<section id="s05-devices" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ตอนที่ 1 · เตรียมก่อนอบรม</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">อุปกรณ์ที่ต้องเตรียมมา</h2>
+</div>
+<div style="display:flex;flex-direction:row;gap:28px;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;padding:40px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:64px;height:64px;color:#A42626" aria-hidden="true"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/></svg>
+<h3 style="font-size:40px;color:#7A1616">คอมพิวเตอร์ หรือโน้ตบุ๊ก</h3>
+<p style="font-size:30px;color:#2B1A1A">สะดวกที่สุด จอใหญ่ ใช้ลูกศรเลื่อนช่องคะแนนได้ และพิมพ์ PDF ได้โดยตรง</p>
+<p style="font-size:28px;color:#6E5A56">แนะนำให้ชาร์จเต็มและนำสายชาร์จมาด้วย</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;padding:40px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:64px;height:64px;color:#A42626" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h13"/></svg>
+<h3 style="font-size:40px;color:#7A1616">iPad หรือแท็บเล็ต</h3>
+<p style="font-size:30px;color:#2B1A1A">ใช้ได้ครบทุกเมนู วาดลายเซ็นด้วยนิ้วหรือปากกา Apple Pencil ได้สะดวก</p>
+<p style="font-size:28px;color:#6E5A56">แป้นพิมพ์บนจอไม่มีปุ่มลูกศร ใช้ Tab หรือ Enter เลื่อนช่องแทน</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;padding:40px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:64px;height:64px;color:#A42626" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+<h3 style="font-size:40px;color:#7A1616">อินเทอร์เน็ตและเบราว์เซอร์</h3>
+<p style="font-size:30px;color:#2B1A1A">Wi-Fi ที่เสถียร และเบราว์เซอร์รุ่นล่าสุด: Chrome, Edge หรือ Safari</p>
+<p style="font-size:28px;color:#6E5A56">ไม่ต้องติดตั้งโปรแกรมใดเพิ่ม</p>
+</div>
+</div>
+<p style="font-size:30px;background:#FBE9B7;color:#4D0A0A;padding:22px 32px;border-radius:20px"><b>เคล็ดลับ:</b> ถ้ามีเมาส์ต่อกับโน้ตบุ๊ก การกรอกคะแนนและกดเมนูจะเร็วขึ้น</p>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">5 / 24</p>
+<aside>ให้ครูเช็กเครื่องของตนเองตั้งแต่ต้น ถ้าใครไม่มีอุปกรณ์ ให้จับคู่นั่งด้วยกัน</aside>
+</section>
+<section id="s06-bring" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ตอนที่ 1 · เตรียมก่อนอบรม</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">ข้อมูลที่ครูนำมาด้วย</h2>
+</div>
+<table style="font-size:32px;color:#2B1A1A;background:#FFFFFF">
+<tr><th style="width:46%;text-align:left;color:#7A1616;font-size:30px">สิ่งที่ต้องเตรียม</th><th style="width:54%;text-align:left;color:#7A1616;font-size:30px">ใช้ทำอะไร</th></tr>
+<tr><td>ชื่อผู้ใช้และรหัสเริ่มต้น</td><td>เข้าสู่ระบบครั้งแรก (ผู้ดูแลระบบแจกให้)</td></tr>
+<tr><td>รายวิชาที่ตนสอน (ชั้น รหัสวิชา)</td><td>ลงทะเบียนวิชาที่สอนในภาคเรียนนี้</td></tr>
+<tr><td>โครงสร้างคะแนนของแต่ละวิชา</td><td>ตั้งช่องคะแนนเก็บ และสัดส่วนระหว่างเรียน : ปลายภาค</td></tr>
+<tr><td>คะแนนตัวอย่างของห้อง 5–10 คน</td><td>ฝึกกรอกจริงระหว่างอบรม</td></tr>
+<tr><td>ภาพลายเซ็น (ถ้ามี ไม่บังคับ)</td><td>แนบแทนการวาดลายเซ็นในระบบ</td></tr>
+<tr><td>คำอธิบายรายวิชา มาตรฐาน ตัวชี้วัด</td><td>กรอกข้อมูลประกอบเล่ม ปพ.5</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">6 / 24</p>
+<aside>แจกรายการนี้ล่วงหน้าอย่างน้อย 3 วัน เพื่อให้ครูเตรียมคะแนนตัวอย่างและโครงสร้างคะแนนมา</aside>
+</section>
+<section id="s07-school" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ตอนที่ 1 · เตรียมก่อนอบรม</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:60px;font-weight:600;line-height:1.15;color:#7A1616">สิ่งที่ผู้ดูแลระบบของโรงเรียนต้องพร้อมก่อนวันอบรม</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:24px;flex:1">
+<div style="display:flex;flex-direction:row;gap:24px;align-items:center;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:72px;height:72px;color:#A42626" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:36px;color:#7A1616">เว็บระบบเปิดใช้งานแล้ว</h3>
+<p style="font-size:28px;color:#6E5A56">ติดตั้งบน GitHub + Vercel เสร็จ เปิดลิงก์แล้วเห็นหน้าเข้าสู่ระบบ</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px;align-items:center;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:72px;height:72px;color:#A42626" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 5a3 3 0 010 6M18 14c2 .8 3.5 2.7 3.5 6"/></svg>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:36px;color:#7A1616">สร้างบัญชีครูทุกคนแล้ว</h3>
+<p style="font-size:28px;color:#6E5A56">มีชื่อผู้ใช้และรหัสเริ่มต้น พิมพ์ใบรหัสแจกครู</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px;align-items:center;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:72px;height:72px;color:#A42626" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h13"/></svg>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:36px;color:#7A1616">ปีการศึกษา นักเรียน รายวิชา</h3>
+<p style="font-size:28px;color:#6E5A56">เปิดปีและภาคเรียน ใส่รายชื่อนักเรียนครบ เปิดรายวิชาที่สอน</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px;align-items:center;background:#FFFFFF;padding:32px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:72px;height:72px;color:#A42626" aria-hidden="true"><path d="M12 3l2.4 1.8 3-.2 1 2.8 2.4 1.8-.9 2.9.9 2.9-2.4 1.8-1 2.8-3-.2L12 21l-2.4-1.8-3 .2-1-2.8L3.2 14.8l.9-2.9-.9-2.9 2.4-1.8 1-2.8 3 .2z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:36px;color:#7A1616">ตั้งค่าโรงเรียนแล้ว</h3>
+<p style="font-size:28px;color:#6E5A56">ชื่อและลายเซ็นผู้บริหาร หัวหน้างาน หัวหน้ากลุ่มสาระ</p>
+</div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">7 / 24</p>
+<aside>สไลด์นี้สำหรับผู้จัดอบรมใช้เช็กลิสต์ ถ้าไม่พร้อม ครูจะลงทะเบียนวิชาหรือกรอกคะแนนไม่ได้ในวันอบรม ควรเช็กอย่างน้อยหนึ่งวันก่อน</aside>
+</section>
+<section id="s08-sec2" data-transition="push" data-sec="steps" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:linear-gradient(135deg,#8C1C1C 0%,#6A1010 55%,#4D0A0A 100%);color:#FFF4DC;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:24px">
+<div style="position:absolute;left:1240px;top:240px;width:600px;height:600px;background:#E8B53F;opacity:0.14;border-radius:50%;z-index:-1"></div>
+<p style="font-family:'Prompt',sans-serif;font-size:280px;font-weight:700;line-height:1;color:#E8B53F">2</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:104px;font-weight:700;line-height:1.1;color:#FFF8E8">ลงมือทีละขั้น</h2>
+<p style="font-size:44px;color:#FFE9B0">7 ขั้นในบทบาทครูผู้สอน ทำตามไปพร้อมกันบนเครื่องของตัวเอง</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#FFE9B0">8 / 24</p>
+</section>
+<section id="s09-roadmap" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ตอนที่ 2 · ลงมือทีละขั้น</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เส้นทาง 7 ขั้นของครูผู้สอน</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:24px">
+<div data-goto="s10-login" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">1</p>
+<h3 style="font-size:34px;color:#7A1616">เข้าสู่ระบบ</h3>
+<p style="font-size:26px;color:#6E5A56">เปลี่ยนรหัสผ่านครั้งแรก</p>
+</div>
+<div data-goto="s11-sign" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">2</p>
+<h3 style="font-size:34px;color:#7A1616">สร้างลายเซ็น</h3>
+<p style="font-size:26px;color:#6E5A56">วาดหรือแนบภาพ</p>
+</div>
+<div data-goto="s12-register" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">3</p>
+<h3 style="font-size:34px;color:#7A1616">ลงทะเบียนวิชา</h3>
+<p style="font-size:26px;color:#6E5A56">ส่งให้แอดมินอนุมัติ</p>
+</div>
+<div data-goto="s13-scores" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">4</p>
+<h3 style="font-size:34px;color:#7A1616">กรอกคะแนน</h3>
+<p style="font-size:26px;color:#6E5A56">ตั้งช่อง แล้วกรอก</p>
+</div>
+<div data-goto="s15-att" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">5</p>
+<h3 style="font-size:34px;color:#7A1616">เช็คชื่อรายวัน</h3>
+<p style="font-size:26px;color:#6E5A56">ไม่บังคับ</p>
+</div>
+<div data-goto="s16-eval" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">6</p>
+<h3 style="font-size:34px;color:#7A1616">ประเมินผู้เรียน</h3>
+<p style="font-size:26px;color:#6E5A56">ต้องครบทุกคน</p>
+</div>
+<div data-goto="s17-p5" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;background:#7A1616;padding:28px;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">7</p>
+<h3 style="font-size:34px;color:#FFF4DC">สมุด ปพ.5</h3>
+<p style="font-size:26px;color:#FFE9B0">ลงนามและดาวน์โหลด</p>
+</div>
+<div data-goto="s18-rules" tabindex="0" role="link" style="display:flex;flex-direction:column;gap:10px;justify-content:center;background:#FBE9B7;padding:28px;border:2px solid #E8B53F;border-radius:22px">
+<h3 style="font-size:34px;color:#4D0A0A">ทำครบแล้ว</h3>
+<p style="font-size:26px;color:#4D0A0A">ได้เล่มพร้อมส่ง</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:520px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;top:40px;width:560px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px dashed #E8B53F;border-radius:40px;background:#FBE9B7;color:#4D0A0A">กดการ์ดเพื่อไปทำขั้นนั้นได้เลย</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">9 / 24</p>
+<aside>ให้ครูเห็นภาพรวมก่อนลงมือ ขั้น 1–3 ทำครั้งเดียวต่อภาคเรียน ขั้น 4–6 ทำซ้ำตลอดภาคเรียน ขั้น 7 ทำตอนปิดเล่ม</aside>
+</section>
+<section id="s10-login" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">1</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 1 จาก 7</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เข้าสู่ระบบและเปลี่ยนรหัสผ่าน</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:28px;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;padding:36px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:64px;height:64px;color:#A42626" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+<h3 style="font-size:38px;color:#7A1616">เปิดเว็บของระบบ</h3>
+<p style="font-size:30px;color:#2B1A1A">ใช้ลิงก์ที่โรงเรียนแจก ด้วย Chrome, Edge หรือ Safari แนะนำให้บันทึกเป็นบุ๊กมาร์ก</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;padding:36px;border:2px solid #E6D6C9;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:64px;height:64px;color:#A42626" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 5a3 3 0 010 6M18 14c2 .8 3.5 2.7 3.5 6"/></svg>
+<h3 style="font-size:38px;color:#7A1616">ใส่ชื่อผู้ใช้และรหัส</h3>
+<p style="font-size:30px;color:#2B1A1A">ครูใช้ <b>ชื่อผู้ใช้</b> ที่ได้รับ ไม่ใช่อีเมล พร้อมรหัสเริ่มต้นจากใบรหัส</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#7A1616;padding:36px;border-radius:24px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:64px;height:64px;color:#E8B53F" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>
+<h3 style="font-size:38px;color:#FFF4DC">ตั้งรหัสผ่านใหม่</h3>
+<p style="font-size:30px;color:#FFE9B0">ครั้งแรกระบบบังคับให้เปลี่ยน ตั้งรหัสที่จำได้และจดเก็บไว้ ไม่บอกผู้อื่น</p>
+</div>
+</div>
+<p style="font-size:30px;background:#FBE9B7;color:#4D0A0A;padding:22px 32px;border-radius:20px"><b>ลืมรหัสผ่าน?</b> แจ้งผู้ดูแลระบบเพื่อรีเซ็ตให้ แล้วตั้งรหัสใหม่อีกครั้ง</p>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">10 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>ให้ทุกคนเข้าระบบพร้อมกัน ถ้าใครเข้าไม่ได้ ตรวจว่าพิมพ์ชื่อผู้ใช้ถูกต้อง ไม่มีช่องว่างท้ายชื่อ</aside>
+</section>
+<section id="s11-sign" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">2</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 2 จาก 7</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">สร้างลายเซ็นของฉัน</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:56px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:20px;width:640px">
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">1. เปิดเมนู “ลายเซ็นของฉัน”</h3>
+<p style="font-size:28px;color:#6E5A56">อยู่ในกลุ่มเมนู “ตั้งค่า”</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">2. วาดในกรอบ หรือแนบภาพ</h3>
+<p style="font-size:28px;color:#6E5A56">ใช้นิ้ว เมาส์ หรือปากกา ภาพควรพื้นขาวหรือโปร่งใส</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">3. กดบันทึก</h3>
+<p style="font-size:28px;color:#6E5A56">วาดผิดให้ “ล้างกรอบ” แล้ววาดใหม่ก่อนบันทึก</p>
+</div>
+</div>
+<img src="images/sign.jpg" alt="หน้าลายเซ็นของฉัน มีกรอบวาดลายเซ็นและปุ่มบันทึก ล้างกรอบ แนบภาพ" style="width:960px;height:579px;object-fit:contain;border:2px solid #E6D6C9;border-radius:20px;background:#FFFFFF">
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#6E5A56">ลายเซ็นเก็บในบัญชีของครูเท่านั้น และใช้ลงนามในเล่ม ปพ.5</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">11 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>บน iPad วาดด้วยนิ้วได้ทันที ถ้าใช้คอมพิวเตอร์ที่ไม่มีทัชแพด แนะนำให้แนบภาพลายเซ็นที่สแกนมาก่อน</aside>
+</section>
+<section id="s12-register" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">3</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 3 จาก 7</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">ลงทะเบียนวิชาที่สอน</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;align-items:center;gap:20px">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:34px;color:#7A1616">เมนู “ลงทะเบียนวิชาสอน”</h3>
+<p style="font-size:28px;color:#6E5A56">เปิดหน้าลงทะเบียนของภาคเรียนนี้</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="56" height="32" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:34px;color:#7A1616">เลือกชั้นที่สอน</h3>
+<p style="font-size:28px;color:#6E5A56">เลือกได้หลายชั้นพร้อมกัน</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="56" height="32" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:34px;color:#7A1616">ติ๊กวิชาของตน</h3>
+<p style="font-size:28px;color:#6E5A56">ถ้ามีครูอื่นลงซ้ำ ระบบเตือนพร้อมบอกชื่อ</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="56" height="32" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#7A1616;padding:30px;border-radius:22px">
+<h3 style="font-size:34px;color:#FFF4DC">ส่งให้แอดมินอนุมัติ</h3>
+<p style="font-size:28px;color:#FFE9B0">กดปุ่มส่ง แล้วรอผลอนุมัติ</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#DFF3E7;padding:28px 32px;border-radius:20px">
+<h3 style="font-size:32px;color:#14482E">อนุมัติแล้ว</h3>
+<p style="font-size:28px;color:#14482E">วิชานั้นจะปรากฏในหน้ากรอกคะแนน เริ่มใช้งานได้ทันที</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBE9B7;padding:28px 32px;border-radius:20px">
+<h3 style="font-size:32px;color:#4D0A0A">ถูกส่งกลับ</h3>
+<p style="font-size:28px;color:#4D0A0A">กระดิ่งแจ้งเตือนพร้อมข้อความ แก้แล้วส่งใหม่ได้</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FFFFFF;padding:28px 32px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:32px;color:#7A1616">ต้องทำทุกภาคเรียน</h3>
+<p style="font-size:28px;color:#6E5A56">ลงทะเบียนใหม่ทุกปีการศึกษาและภาคเรียน</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">12 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>จุดที่ครูมักสะดุด: ลงทะเบียนแล้วแต่ยังไม่ได้กดส่ง หรือแอดมินยังไม่อนุมัติ ผู้จัดอบรมควรอนุมัติให้ทันทีระหว่างอบรม</aside>
+</section>
+<section id="s13-scores" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">4</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 4 จาก 7</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">ตั้งช่องคะแนนและกรอกคะแนน</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:56px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:20px;width:640px">
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">1. เลือกวิชาและสัดส่วน</h3>
+<p style="font-size:28px;color:#6E5A56">60:40, 70:30 หรือ 80:20 ตามที่โรงเรียนกำหนด</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">2. ตั้งช่องคะแนนเก็บ</h3>
+<p style="font-size:28px;color:#6E5A56">กี่ช่อง ช่องละเท่าไร ประถมเลือกเก็บ 100 หรือ 50 ต่อภาคเรียน</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#7A1616;padding:24px 28px;border-radius:20px">
+<h3 style="font-size:34px;color:#FFF4DC">3. กรอกคะแนนรายคน</h3>
+<p style="font-size:28px;color:#FFE9B0">ระบบรวมและตัดเกรด 0–4 ให้ทันที</p>
+</div>
+</div>
+<img src="images/scores.jpg" alt="หน้าบันทึกคะแนน มีตารางคะแนนระหว่างเรียน ปลายภาค ชั่วโมงที่ขาด และเกรดอัตโนมัติ" style="width:960px;height:579px;object-fit:contain;border:2px solid #E6D6C9;border-radius:20px;background:#FFFFFF">
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#6E5A56">เมนู “บันทึกคะแนน” · ไม่มีปุ่มบันทึก ทุกช่องที่กรอกถูกเก็บให้ทันที</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">13 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>ให้ครูกรอกคะแนนตัวอย่างอย่างน้อย 5 คน ชี้ให้ดูช่องเกรดที่เปลี่ยนทันที ประถมภาคเรียนที่ 1 ยังไม่ตัดเกรด ตัดเมื่อจบภาคเรียนที่ 2</aside>
+</section>
+<section id="s14-keys" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 4 ต่อ · กรอกให้เร็วขึ้น</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">คีย์ลัดเลื่อนช่องคะแนน</h2>
+</div>
+<div style="display:flex;flex-direction:row;gap:28px">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;padding:36px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:80px;font-weight:700;line-height:1;color:#7A1616">← → ↑ ↓</p>
+<h3 style="font-size:36px;color:#7A1616">ลูกศร</h3>
+<p style="font-size:28px;color:#6E5A56">เลื่อนซ้าย ขวา ขึ้น ลง ไปช่องข้างเคียง ช่องใหม่ถูกเลือกไว้ พิมพ์ทับได้เลย</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;padding:36px;border:2px solid #E6D6C9;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:80px;font-weight:700;line-height:1;color:#7A1616">Enter</p>
+<h3 style="font-size:36px;color:#7A1616">ลงล่าง</h3>
+<p style="font-size:28px;color:#6E5A56">กรอกคะแนนคนแรก กด Enter ไปคนถัดไปในคอลัมน์เดิม</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#7A1616;padding:36px;border-radius:24px">
+<p style="font-family:'Prompt',sans-serif;font-size:80px;font-weight:700;line-height:1;color:#E8B53F">Tab</p>
+<h3 style="font-size:36px;color:#FFF4DC">ช่องถัดไป</h3>
+<p style="font-size:28px;color:#FFE9B0">ใช้ได้ทุกอุปกรณ์ รวมถึง iPad ที่ไม่มีปุ่มลูกศร</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBE9B7;padding:26px 30px;border-radius:20px">
+<h3 style="font-size:32px;color:#4D0A0A">ชั่วโมงที่ขาด</h3>
+<p style="font-size:28px;color:#4D0A0A">กรอกเฉพาะคนที่ขาด ช่องว่างคือมาครบ ถ้าใช้เช็คชื่อรายวัน ระบบคำนวณให้เอง</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBE9B7;padding:26px 30px;border-radius:20px">
+<h3 style="font-size:32px;color:#4D0A0A">เวลาเรียนต่ำกว่า 80%</h3>
+<p style="font-size:28px;color:#4D0A0A">ได้ มส. ระบบไม่ตัดเกรดให้ เกรดจะกลับมาเมื่อแก้เวลาเรียน</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">14 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>ให้ครูที่ใช้โน้ตบุ๊กลองกดลูกศรจริงในตารางคะแนน ส่วนครูที่ใช้ iPad ให้ลอง Tab หรือ Enter</aside>
+</section>
+<section id="s15-att" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">5</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 5 จาก 7 · ไม่บังคับ</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เช็คชื่อรายวัน</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:56px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:20px;width:640px">
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">1. เพิ่มวันเรียน</h3>
+<p style="font-size:28px;color:#6E5A56">ทีละวัน หรือทั้งช่วง ระบบข้ามเสาร์-อาทิตย์ให้</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">2. ลงสถานะเฉพาะคนที่ไม่มา</h3>
+<p style="font-size:28px;color:#6E5A56">ข ขาด · ล ลากิจ · ป ลาป่วย · ส สาย · น หนีเรียน (สายนับว่ามา)</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#7A1616;padding:24px 28px;border-radius:20px">
+<h3 style="font-size:34px;color:#FFF4DC">3. ได้ผลอัตโนมัติ</h3>
+<p style="font-size:28px;color:#FFE9B0">ชั่วโมงขาด ร้อยละ มส. และหน้าเวลาเรียนใน ปพ.5</p>
+</div>
+</div>
+<img src="images/att.jpg" alt="หน้าเช็คชื่อรายวัน มีปุ่มเพิ่มวันเรียน และตารางสถานะรายคน" style="width:960px;height:579px;object-fit:contain;border:2px solid #E6D6C9;border-radius:20px;background:#FFFFFF">
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#6E5A56">ถ้าไม่เช็คชื่อ เล่ม ปพ.5 จะไม่มีหน้าเวลาเรียนรายวัน และกรอกชั่วโมงที่ขาดเองได้</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">15 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>ภาคเรียนนี้ไม่บังคับ ครูเลือกเองว่าจะใช้หรือไม่ วิชาที่สอนมากกว่า 40 ชั่วโมงตั้งชั่วโมงทั้งภาคเรียนเองได้ในหน้านี้</aside>
+</section>
+<section id="s16-eval" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">6</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 6 จาก 7</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">ประเมินผู้เรียนให้ครบ</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:56px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:20px;width:640px">
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">1. ประเมิน 3 หมวด</h3>
+<p style="font-size:28px;color:#6E5A56">คุณลักษณะ · อ่าน คิดวิเคราะห์ เขียน · สมรรถนะ</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">2. ตั้งทั้งห้อง แล้วแก้รายคน</h3>
+<p style="font-size:28px;color:#6E5A56">ระดับ 3 ดีเยี่ยม · 2 ดี · 1 ผ่าน · 0 ไม่ผ่าน</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#7A1616;padding:24px 28px;border-radius:20px">
+<h3 style="font-size:34px;color:#FFF4DC">3. ดูตัวนับความคืบหน้า</h3>
+<p style="font-size:28px;color:#FFE9B0">ครบทุกคนจึงปลดล็อกการลงนามและดาวน์โหลด ปพ.5</p>
+</div>
+</div>
+<img src="images/eval.jpg" alt="หน้าประเมินคุณลักษณะ มีแท็บสามหมวดและปุ่มใช้กับทั้งห้อง" style="width:960px;height:579px;object-fit:contain;border:2px solid #E6D6C9;border-radius:20px;background:#FFFFFF">
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#6E5A56">เมนู “ประเมินคุณลักษณะ” · ประถมประเมินในภาคเรียนที่ 2 · มัธยมประเมินทุกภาคเรียน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">16 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>เน้นว่าขั้นนี้ข้ามไม่ได้ ถ้ายังประเมินไม่ครบ ปุ่มลงนามและดาวน์โหลดเล่ม ปพ.5 จะถูกล็อก</aside>
+</section>
+<section id="s17-p5" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:row;align-items:center;gap:28px">
+<div style="width:96px;height:96px;border-radius:48px;background:#E8B53F;display:flex;align-items:center;justify-content:center"><p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;color:#4D0A0A">7</p></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ขั้นที่ 7 จาก 7</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">สมุด ปพ.5 ลงนามและดาวน์โหลด</h2>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:56px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:20px;width:640px">
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">1. กรอกข้อมูลประกอบเล่ม</h3>
+<p style="font-size:28px;color:#6E5A56">คำอธิบายรายวิชา มาตรฐาน ตัวชี้วัด และเวลาของแต่ละหน่วย</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FFFFFF;padding:24px 28px;border:2px solid #E6D6C9;border-radius:20px">
+<h3 style="font-size:34px;color:#7A1616">2. ตรวจรายการความครบถ้วน</h3>
+<p style="font-size:28px;color:#6E5A56">รายการที่ยังขาดมีปุ่ม “ไปกรอก” พาไปหน้านั้น</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#7A1616;padding:24px 28px;border-radius:20px">
+<h3 style="font-size:34px;color:#FFF4DC">3. ติ๊กลงนาม แล้วดาวน์โหลด</h3>
+<p style="font-size:28px;color:#FFE9B0">PDF สำหรับพิมพ์ · Word สำหรับแก้ · Excel สำหรับตารางคะแนน</p>
+</div>
+</div>
+<img src="images/p5.jpg" alt="หน้าสมุด ปพ.5 มีปุ่มดาวน์โหลด PDF Word Excel และตัวอย่างหน้าในเล่ม" style="width:960px;height:579px;object-fit:contain;border:2px solid #E6D6C9;border-radius:20px;background:#FFFFFF">
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#6E5A56">ระบบตั้งชื่อไฟล์ให้อัตโนมัติ: ชื่อวิชา_ชั้น_ภาคเรียน_ปีการศึกษา_ครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">17 / 24</p>
+<p data-goto="s09-roadmap" tabindex="0" role="link" style="position:absolute;right:128px;top:72px;width:400px;text-align:center;font-size:26px;font-weight:600;padding:10px 0;border:2px solid #E6D6C9;border-radius:40px;background:#FFFFFF;color:#7A1616">◀ กลับเส้นทาง 7 ขั้น</p>
+<aside>บน iPad ระบบสร้าง PDF ให้ดาวน์โหลดโดยตรง บนคอมพิวเตอร์จะเปิดหน้าต่างพิมพ์ ให้เลือก บันทึกเป็น PDF</aside>
+</section>
+<section id="s18-rules" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ตอนที่ 3 · กติกาที่ควรรู้</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เกณฑ์เกรดและ มส.</h2>
+</div>
+<div style="display:flex;flex-direction:row;gap:14px">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#7A1616;padding:26px 8px;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E8B53F">4</p><p style="font-size:28px;color:#FFF4DC">80 ขึ้นไป</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#7A1616">3.5</p><p style="font-size:28px;color:#2B1A1A">75–79</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#7A1616">3</p><p style="font-size:28px;color:#2B1A1A">70–74</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#7A1616">2.5</p><p style="font-size:28px;color:#2B1A1A">65–69</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#7A1616">2</p><p style="font-size:28px;color:#2B1A1A">60–64</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#7A1616">1.5</p><p style="font-size:28px;color:#2B1A1A">55–59</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#7A1616">1</p><p style="font-size:28px;color:#2B1A1A">50–54</p></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;padding:26px 8px;border:2px solid #E6D6C9;border-radius:20px"><p style="font-family:'Prompt',sans-serif;font-size:64px;font-weight:700;line-height:1;color:#B3261E">0</p><p style="font-size:28px;color:#2B1A1A">ต่ำกว่า 50</p></div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:34px;color:#7A1616">มส. เมื่อเวลาเรียนต่ำกว่า 80%</h3>
+<p style="font-size:28px;color:#6E5A56">ระบบไม่ตัดเกรดให้ ประถมนับเวลาเรียนรวมทั้งปี</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:34px;color:#7A1616">ประถมกับมัธยมต่างกัน</h3>
+<p style="font-size:28px;color:#6E5A56">ประถมภาคเรียนที่ 1 ยังไม่ตัดเกรด มัธยมตัดเกรดทุกภาคเรียน</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:34px;color:#7A1616">กิจกรรมพัฒนาผู้เรียน</h3>
+<p style="font-size:28px;color:#6E5A56">ชุมนุม ลูกเสือ และกิจกรรมเพื่อสังคม ตัดสินโดยครูผู้รับผิดชอบ</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">18 / 24</p>
+<aside>ตัวเลขด้านบนคือคะแนนร้อยละรวม ครูไม่ต้องคำนวณเอง ระบบรวมระหว่างเรียนกับปลายภาคตามสัดส่วนแล้วตัดเกรดให้</aside>
+</section>
+<section id="s19-faq" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ตอนที่ 3 · ถามตอบ</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เจอปัญหา ดูตรงนี้ก่อน</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:24px;flex:1">
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:32px;color:#7A1616">ลืมรหัสผ่าน</h3>
+<p style="font-size:28px;color:#6E5A56">แจ้งผู้ดูแลระบบเพื่อรีเซ็ต แล้วตั้งรหัสใหม่</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:32px;color:#7A1616">ไม่เห็นวิชาในหน้ากรอกคะแนน</h3>
+<p style="font-size:28px;color:#6E5A56">ยังไม่ได้ส่งลงทะเบียน หรือแอดมินยังไม่อนุมัติ</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:32px;color:#7A1616">ปุ่มดาวน์โหลด ปพ.5 เป็นสีเทา</h3>
+<p style="font-size:28px;color:#6E5A56">ยังประเมินผู้เรียนไม่ครบทุกคน กดปุ่ม “ไปประเมิน”</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:32px;color:#7A1616">ช่องชั่วโมงที่ขาดกดไม่ได้</h3>
+<p style="font-size:28px;color:#6E5A56">เพราะใช้เช็คชื่อรายวันอยู่ ระบบคำนวณให้เอง</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<h3 style="font-size:32px;color:#7A1616">คะแนนหายหรือไม่ขึ้น</h3>
+<p style="font-size:28px;color:#6E5A56">รีเฟรชหน้าและตรวจอินเทอร์เน็ต ข้อมูลเก็บบนเว็บ ไม่ได้เก็บแค่ในเครื่อง</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#7A1616;padding:30px;border-radius:22px">
+<h3 style="font-size:32px;color:#FFF4DC">มีครูสองคนกรอกวิชาเดียวกัน</h3>
+<p style="font-size:28px;color:#FFE9B0">คนที่กรอกก่อนได้สิทธิ์ อีกคนจะได้แจ้งเตือน</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">19 / 24</p>
+<aside>ปิดตอนที่ 2–3 เปิดให้ครูถามคำถาม จดคำถามที่ซ้ำไว้เพื่อปรับคู่มือ</aside>
+</section>
+<section id="s20-sec3" data-transition="push" data-sec="appendix" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:linear-gradient(135deg,#8C1C1C 0%,#6A1010 55%,#4D0A0A 100%);color:#FFF4DC;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:24px">
+<div style="position:absolute;left:1240px;top:240px;width:600px;height:600px;background:#E8B53F;opacity:0.14;border-radius:50%;z-index:-1"></div>
+<p style="font-family:'Prompt',sans-serif;font-size:280px;font-weight:700;line-height:1;color:#E8B53F">+</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:104px;font-weight:700;line-height:1.1;color:#FFF8E8">ภาคผนวก: GitHub + Vercel</h2>
+<p style="font-size:44px;color:#FFE9B0">สำหรับผู้ติดตั้งและดูแลระบบ ครูทั่วไปไม่ต้องทำ</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#FFE9B0">20 / 24</p>
+</section>
+<section id="s21-tools" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ภาคผนวก · เครื่องมือที่ต้องเตรียม</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เตรียมให้พร้อมก่อนเริ่มติดตั้ง</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:24px;flex:1">
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:56px;height:56px;color:#A42626" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.5-9A6 6 0 0118 10a4 4 0 01-1 8z"/></svg>
+<h3 style="font-size:34px;color:#7A1616">บัญชี Google</h3>
+<p style="font-size:28px;color:#6E5A56">ใช้สร้างโปรเจกต์ Firebase (Authentication และ Firestore)</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:56px;height:56px;color:#A42626" aria-hidden="true"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/></svg>
+<h3 style="font-size:34px;color:#7A1616">บัญชี GitHub</h3>
+<p style="font-size:28px;color:#6E5A56">เก็บไฟล์ของระบบใน repository ของโรงเรียน</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:56px;height:56px;color:#A42626" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+<h3 style="font-size:34px;color:#7A1616">บัญชี Vercel</h3>
+<p style="font-size:28px;color:#6E5A56">สมัครด้วยบัญชี GitHub เพื่อเชื่อมกันง่ายที่สุด</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:56px;height:56px;color:#A42626" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h13"/></svg>
+<h3 style="font-size:34px;color:#7A1616">ไฟล์ระบบทั้งชุด</h3>
+<p style="font-size:28px;color:#6E5A56">แตกไฟล์ zip ที่ได้รับไว้ในโฟลเดอร์ที่หาง่าย</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:56px;height:56px;color:#A42626" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+<h3 style="font-size:34px;color:#7A1616">คอมพิวเตอร์และอินเทอร์เน็ต</h3>
+<p style="font-size:28px;color:#6E5A56">ทำผ่านเว็บเบราว์เซอร์ทั้งหมด ไม่ต้องติดตั้งโปรแกรมเพื่ออัปโหลด</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#7A1616;padding:30px;border-radius:22px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;width:56px;height:56px;color:#E8B53F" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>
+<h3 style="font-size:34px;color:#FFF4DC">อีเมลและรหัสผู้ดูแลระบบ</h3>
+<p style="font-size:28px;color:#FFE9B0">สำหรับบัญชีผู้ดูแลคนแรกของระบบ จดเก็บให้ปลอดภัย</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">21 / 24</p>
+<aside>ทั้งหมดมีแผนใช้ฟรีสำหรับขนาดโรงเรียน แนะนำให้ใช้บัญชีกลางของโรงเรียน ไม่ใช่บัญชีส่วนตัว เพื่อไม่ให้ระบบหายเมื่อคนดูแลเปลี่ยน</aside>
+</section>
+<section id="s22-install" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#FBF3E4;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ภาคผนวก · ติดตั้งครั้งแรก</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">ติดตั้งระบบ 6 ขั้น</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:24px;flex:1">
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">1</p>
+<h3 style="font-size:32px;color:#7A1616">สร้างโปรเจกต์ Firebase</h3>
+<p style="font-size:26px;color:#6E5A56">เปิด Authentication แบบ Email/Password และฐานข้อมูล Firestore</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">2</p>
+<h3 style="font-size:32px;color:#7A1616">สร้าง repository บน GitHub</h3>
+<p style="font-size:26px;color:#6E5A56">กด Add file แล้ว Upload files ลากไฟล์ระบบทั้งหมดขึ้นไป และกด Commit changes</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">3</p>
+<h3 style="font-size:32px;color:#7A1616">นำเข้าที่ Vercel</h3>
+<p style="font-size:26px;color:#6E5A56">Add New → Project เลือก repository ของระบบ แล้วกด Deploy</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">4</p>
+<h3 style="font-size:32px;color:#7A1616">ใส่ค่าตั้งค่าใน Vercel</h3>
+<p style="font-size:26px;color:#6E5A56">ค่า Environment Variables ของ Firebase (ชุด VITE_FIREBASE และ FIREBASE_ADMIN) แล้ว Redeploy</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:28px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">5</p>
+<h3 style="font-size:32px;color:#7A1616">วางกฎ Firestore</h3>
+<p style="font-size:26px;color:#6E5A56">คัดลอกไฟล์ firestore.rules ไปวางใน Firestore → Rules แล้วกด Publish</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#7A1616;padding:28px;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">6</p>
+<h3 style="font-size:32px;color:#FFF4DC">สร้างผู้ดูแลคนแรก</h3>
+<p style="font-size:26px;color:#FFE9B0">ทำตามหัวข้อ “ตั้งค่าครั้งแรก” ในไฟล์ README ที่มากับระบบ แล้วล็อกอินทดสอบ</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">22 / 24</p>
+<aside>รายละเอียดเต็มอยู่ในไฟล์ README ในชุดระบบ ขั้นที่ 4 และ 6 ต้องทำตามอย่างละเอียด ถ้าข้ามขั้นที่ 5 ผู้ใช้จะอ่านหรือเขียนข้อมูลไม่ได้</aside>
+</section>
+<section id="s23-update" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:#F7EFE7;color:#2B1A1A;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-size:28px;font-weight:600;color:#A42626">ภาคผนวก · อัปเดตระบบ</p>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#7A1616">เมื่อมีไฟล์ใหม่ อัปเดตได้ใน 4 ขั้น</h2>
+</div>
+<div style="display:flex;flex-direction:row;align-items:center;gap:20px">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">1</p>
+<h3 style="font-size:32px;color:#7A1616">เปิด repository</h3>
+<p style="font-size:26px;color:#6E5A56">ที่ GitHub กด Add file → Upload files</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="52" height="30" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">2</p>
+<h3 style="font-size:32px;color:#7A1616">วางไฟล์ทับ</h3>
+<p style="font-size:26px;color:#6E5A56">ใช้ชื่อไฟล์และโฟลเดอร์เดิมทุกตัว</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="52" height="30" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FFFFFF;padding:30px;border:2px solid #E6D6C9;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">3</p>
+<h3 style="font-size:32px;color:#7A1616">กด Commit changes</h3>
+<p style="font-size:26px;color:#6E5A56">แล้วรอที่ Vercel จนสถานะขึ้น Ready</p>
+</div>
+<svg viewBox="0 0 100 50" preserveAspectRatio="none" width="52" height="30" style="flex:none" aria-hidden="true"><polygon points="0,15 60,15 60,0 100,25 60,50 60,35 0,35" fill="#E8B53F"/></svg>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#7A1616;padding:30px;border-radius:22px">
+<p style="font-family:'Prompt',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#E8B53F">4</p>
+<h3 style="font-size:32px;color:#FFF4DC">รีเฟรชแรง ๆ</h3>
+<p style="font-size:26px;color:#FFE9B0">กด Ctrl + Shift + R แล้วทดสอบ</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBE9B7;padding:28px 32px;border-radius:20px">
+<h3 style="font-size:32px;color:#4D0A0A">ระวังชื่อไฟล์</h3>
+<p style="font-size:28px;color:#4D0A0A">ชื่อต้องตรงเดิมเป๊ะ เช่น engine.js ห้ามมีเว้นวรรคในชื่อ</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBE9B7;padding:28px 32px;border-radius:20px">
+<h3 style="font-size:32px;color:#4D0A0A">กฎ Firestore เปลี่ยนต้องเผยแพร่เอง</h3>
+<p style="font-size:28px;color:#4D0A0A">ถ้ามี firestore.rules ใหม่ ให้ไปวางและกด Publish ใน Firebase Console ด้วย</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-size:24px;color:#6E5A56">ระบบตัดเกรด · อบรมครูผู้สอน</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6E5A56">23 / 24</p>
+<aside>Vercel สร้างเว็บใหม่อัตโนมัติทุกครั้งที่มี Commit ใหม่ ปกติใช้เวลาไม่เกินสองสามนาที</aside>
+</section>
+<section id="s24-end" data-transition="fade" data-sec="" style="width:1920px;height:1080px;position:relative;isolation:isolate;overflow:hidden;flex:none;background:linear-gradient(135deg,#8C1C1C 0%,#6A1010 55%,#4D0A0A 100%);color:#FFF4DC;font-family:'Noto Sans Thai', Tahoma, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
+<div style="position:absolute;left:1160px;top:0px;width:760px;height:760px;background:#E8B53F;opacity:0.12;border-radius:50%;z-index:-1"></div>
+<div style="width:200px;height:200px;border-radius:50%;background:#FFFBF2;display:flex;align-items:center;justify-content:center;border:8px solid #E8B53F">
+<img src="images/logo.png" alt="ตราโรงเรียนวัดบางปูน" style="width:150px;height:150px;object-fit:contain">
+</div>
+<h2 style="font-family:'Prompt','Noto Sans Thai',sans-serif;font-size:112px;font-weight:700;line-height:1.1;color:#FFF8E8">ขอบคุณครับ</h2>
+<p style="font-size:44px;color:#FFE9B0">ลองทำตามทีละขั้น ติดตรงไหนถามได้ทันที</p>
+<p style="font-size:32px;color:#FFF4DC">คู่มือฉบับพิมพ์และคู่มือบนเว็บ ใช้ดูทบทวนหลังอบรมได้</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1100px;font-size:28px;color:#FFE9B0">โรงเรียนวัดบางปูน · สพป.สิงห์บุรี</p>
+<p style="position:absolute;right:128px;bottom:64px;width:560px;text-align:right;font-size:28px;color:#FFE9B0">พัฒนาโดย ครูซอสสอนสังคม</p>
+</section>
+</main>
+<div id="notes" role="note"></div>
+<div id="bar" role="toolbar" aria-label="ควบคุมสไลด์">
+<button id="prev" aria-label="หน้าก่อนหน้า">◀</button>
+<span class="no" id="no">1 / 1</span>
+<button id="next" aria-label="หน้าถัดไป">▶</button>
+<span class="sp"></span>
+<button class="sec" data-go="s01-cover" data-sec="intro">บทนำ</button>
+<button class="sec" data-go="s04-sec1" data-sec="prep">เตรียม</button>
+<button class="sec" data-go="s09-roadmap" data-sec="steps">7 ขั้น</button>
+<button class="sec" data-go="s20-sec3" data-sec="appendix">ภาคผนวก</button>
+<span class="sp"></span>
+<button id="nt" title="โน้ตผู้บรรยาย (N)">โน้ต</button>
+<button id="fs" title="เต็มจอ (F)">เต็มจอ</button>
+<button id="pr" title="พิมพ์ / บันทึกเป็น PDF">PDF</button>
+</div>
+<div id="rot"><div><b>หมุนจอเป็นแนวนอน</b>สไลด์ออกแบบสำหรับจอแนวนอน จะอ่านง่ายกว่ามาก</div></div>
+<script>
+(function(){
+var st=document.getElementById('stage'),sl=[].slice.call(st.children).filter(function(e){return e.tagName==='SECTION'}),n=sl.length,cur=0;
+var no=document.getElementById('no'),pg=document.getElementById('prog'),nb=document.getElementById('notes'),bar=document.getElementById('bar'),rot=document.getElementById('rot');
+var secBtn=[].slice.call(document.querySelectorAll('#bar .sec'));
+function fit(){var w=innerWidth,h=innerHeight,s=Math.min(w/1920,h/1080);st.style.transform='translate('+((w-1920*s)/2)+'px,'+((h-1080*s)/2)+'px) scale('+s+')';rot.classList.toggle('need',innerWidth<=640&&innerHeight>innerWidth)}
+function note(){var a=sl[cur].querySelector('aside');nb.innerHTML=a?'<b>โน้ตผู้บรรยาย</b><br>'+a.textContent:'<b>โน้ตผู้บรรยาย</b><br>ไม่มีโน้ตในหน้านี้'}
+function go(i,noHash){cur=Math.max(0,Math.min(n-1,i));sl.forEach(function(s,k){s.classList.toggle('on',k===cur)});no.textContent=(cur+1)+' / '+n;pg.style.width=((cur+1)/n*100)+'%';
+var sec=sl[cur].getAttribute('data-sec');
+secBtn.forEach(function(b){b.classList.toggle('on',sec===b.getAttribute('data-sec'))});
+if(!noHash){try{history.replaceState(null,'','#'+(cur+1))}catch(e){}}document.title=n?document.title.split(' · ')[0]+' · '+(cur+1)+'/'+n:document.title;if(nb.classList.contains('show'))note()}
+function find(id){for(var k=0;k<n;k++)if(sl[k].id===id)return k;return 0}
+document.getElementById('prev').onclick=function(){go(cur-1)};
+document.getElementById('next').onclick=function(){go(cur+1)};
+secBtn.forEach(function(b){b.onclick=function(){go(find(b.getAttribute('data-go')))}});
+document.getElementById('nt').onclick=function(){nb.classList.toggle('show');if(nb.classList.contains('show'))note()};
+function fs(){var d=document;if(d.fullscreenElement){d.exitFullscreen()}else if(d.documentElement.requestFullscreen){d.documentElement.requestFullscreen()}}
+document.getElementById('fs').onclick=fs;
+document.getElementById('pr').onclick=function(){window.print()};
+addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var k=e.key;var ae=document.activeElement;if((k==='Enter'||k===' ')&&ae&&ae.getAttribute&&ae.getAttribute('data-goto')){e.preventDefault();go(find(ae.getAttribute('data-goto')));return}
+if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();go(cur+1)}
+else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){e.preventDefault();go(cur-1)}
+else if(k==='Home'){go(0)}else if(k==='End'){go(n-1)}
+else if(k==='f'||k==='F'){fs()}else if(k==='n'||k==='N'){document.getElementById('nt').click()}});
+var x0=null,y0=null;
+addEventListener('touchstart',function(e){if(e.target.closest('#bar'))return;x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){go(cur+(dx<0?1:-1))}},{passive:true});
+st.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){go(find(g.getAttribute('data-goto')));return}if(e.clientX>innerWidth*0.5)go(cur+1);else go(cur-1)});
+var t;function wake(){bar.classList.remove('hide');clearTimeout(t);t=setTimeout(function(){if(!nb.classList.contains('show'))bar.classList.add('hide')},3500)}
+['mousemove','touchstart','keydown'].forEach(function(ev){addEventListener(ev,wake,{passive:true})});wake();
+addEventListener('resize',fit);addEventListener('hashchange',function(){var m=location.hash.match(/\d+/);if(m)go(+m[0]-1,true)});
+fit();var m=location.hash.match(/\d+/);go(m?+m[0]-1:0,true);
+})();
+</script>
+</body>
+</html>
